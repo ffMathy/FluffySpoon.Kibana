@@ -23,8 +23,12 @@ namespace FluffySpoon.Kibana.States
 					.Select(x => x.Trim())
 					.ToArray();
 
-				result += "\"";
-				result += keyValuePair[0];
+                var property = keyValuePair[0];
+                if(property.StartsWith("'") && property.EndsWith("'"))
+                    property = property.Substring(1, property.Length - 2);
+
+                result += "\"";
+				result += property;
 				result += "\":";
 
 				result += new ValueKibanaUrlParserState().Handle(keyValuePair[1]);
