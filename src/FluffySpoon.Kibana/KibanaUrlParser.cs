@@ -1,6 +1,8 @@
-﻿namespace FluffySpoon.Kibana
+﻿using FluffySpoon.Kibana.States;
+
+namespace FluffySpoon.Kibana
 {
-	public class KibanaUrlParser
+	public class KibanaUrlParser : IKibanaUrlParser
 	{
 		public string ConvertQueryParameterValueToJson(string value)
 		{

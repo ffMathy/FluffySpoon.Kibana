@@ -1,4 +1,4 @@
-﻿namespace FluffySpoon.Kibana
+﻿namespace FluffySpoon.Kibana.States
 {
 	internal interface IKibanaUrlParserState
 	{

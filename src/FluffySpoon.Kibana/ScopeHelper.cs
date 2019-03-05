@@ -12,11 +12,11 @@ namespace FluffySpoon.Kibana
 			if (string.IsNullOrEmpty(content))
 				return scopes.ToArray();
 
-			var results = new[]
+			var results = new string[]
 			{
-				string.Empty,
-				string.Empty,
-				string.Empty
+				null,
+				null,
+				null
 			};
 
 			var scope = 0;
@@ -30,21 +30,21 @@ namespace FluffySpoon.Kibana
 
 				var scopeObject = new Scope
 				{
-					Prefix = results[0].Substring(0, results[0].Length - (results[1] == "" ? 0 : (entry.Length - 1))),
+					Prefix = results[0]?.Substring(0, results[0].Length - (string.IsNullOrEmpty(results[1]) ? 0 : (entry.Length - 1))),
 					Content = results[1],
 					Suffix = results[2],
 					Offset = offset,
-					Length = entry.Length + results[1].Length + exit.Length
+					Length = entry.Length + (results[1]?.Length ?? 0) + exit.Length
 				};
 
-				scopeObject.Prefix = scopeObject.Prefix.Trim();
-				scopeObject.Content = scopeObject.Content.Trim();
-				scopeObject.Suffix = scopeObject.Suffix.Trim();
+				scopeObject.Prefix = scopeObject.Prefix?.Trim();
+				scopeObject.Content = scopeObject.Content?.Trim();
+				scopeObject.Suffix = scopeObject.Suffix?.Trim();
 
-				if (scopeObject.Prefix.StartsWith(exit))
+				if (scopeObject.Prefix?.StartsWith(exit) == true)
 					scopeObject.Prefix = scopeObject.Prefix.Substring(exit.Length).Trim();
 
-				if (scopeObject.Suffix.EndsWith(entry))
+				if (scopeObject.Suffix?.EndsWith(entry) == true)
 					scopeObject.Suffix = scopeObject.Suffix.Substring(0, scopeObject.Suffix.Length - entry.Length).Trim();
 
 				if (!string.IsNullOrEmpty(scopeObject.Suffix) || !string.IsNullOrEmpty(scopeObject.Content) || !string.IsNullOrEmpty(scopeObject.Prefix))
@@ -59,7 +59,7 @@ namespace FluffySpoon.Kibana
 			{
 				for (var i = 0; i < count; i++)
 				{
-					results[area] = results[area].Substring(0, results[area].Length - 1);
+					results[area] = results[area]?.Substring(0, results[area]?.Length == 0 ? 0 : results[area].Length - 1);
 				}
 			};
 
@@ -103,12 +103,10 @@ namespace FluffySpoon.Kibana
 
 		public static string[] GetScopedList(string separator, string content, bool includeSeparatorInSplits = false)
 		{
-			var scopes = new [] {
-	
-				("<", ">"),
-				("[", "]"),
-				("(", ")"),
-				("{", "}")
+			var scopes = new[] {
+
+				("!(", ")"),
+				("(", ")")
 			};
 
 			bool isEntryScope(string item) => scopes.Any(x => x.Item1 == item);
@@ -119,7 +117,8 @@ namespace FluffySpoon.Kibana
 			var deepScopeStringSoFar = "";
 			var splits = new List<string>();
 
-			void pushNewSplit() {
+			void pushNewSplit()
+			{
 				totalStringSoFar = totalStringSoFar.Trim();
 				if (string.IsNullOrEmpty(totalStringSoFar))
 					return;
@@ -128,7 +127,8 @@ namespace FluffySpoon.Kibana
 				totalStringSoFar = "";
 			};
 
-			EnumerateRelevantCodeCharacterRegions(content, (stringSoFar, character) => {
+			EnumerateRelevantCodeCharacterRegions(content, (stringSoFar, character) =>
+			{
 				if (isEntryScope(character))
 				{
 					scope++;
@@ -159,6 +159,9 @@ namespace FluffySpoon.Kibana
 
 		static string EnumerateRelevantCodeCharacterRegions(string content, Action<string, string> enumerator = null)
 		{
+			if (content == null)
+				return null;
+
 			var insideString = false;
 			var stringEntry = "";
 			var insideStringEscapeCharacter = false;
@@ -195,7 +198,7 @@ namespace FluffySpoon.Kibana
 	{
 		public Scope(string value = null)
 		{
-			if (value == null) 
+			if (value == null)
 				return;
 
 			Prefix = value;
