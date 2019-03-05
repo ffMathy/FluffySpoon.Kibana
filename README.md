@@ -17,7 +17,7 @@ Provides helper tools for Kibana such as URL parsing.
    ],
    "filters":[
       {
-         "'$state'":{
+         "$state":{
             "store":"appState"
          },
          "meta":{
@@ -43,7 +43,7 @@ Provides helper tools for Kibana such as URL parsing.
          }
       },
       {
-         "'$state'":{
+         "$state":{
             "store":"appState"
          },
          "meta":{
@@ -69,7 +69,7 @@ Provides helper tools for Kibana such as URL parsing.
          }
       },
       {
-         "'$state'":{
+         "$state":{
             "store":"appState"
          },
          "meta":{
@@ -95,7 +95,7 @@ Provides helper tools for Kibana such as URL parsing.
          }
       },
       {
-         "'$state'":{
+         "$state":{
             "store":"appState"
          },
          "meta":{
