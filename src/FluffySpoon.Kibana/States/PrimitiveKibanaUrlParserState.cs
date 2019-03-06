@@ -13,7 +13,10 @@ namespace FluffySpoon.Kibana.States
 			if(afterExplamationMark == "t")
 				return "true";
 
-			return "\"" + content + "\"";
+            if (afterExplamationMark == "n")
+                return "null";
+
+            return "\"" + content + "\"";
 		}
 	}
 }

@@ -21,7 +21,7 @@ Provides helper tools for Kibana such as URL parsing.
             "store":"appState"
          },
          "meta":{
-            "alias":"!n",
+            "alias":null,
             "disabled":false,
             "index":"c69d0b00-0f28-11e9-9d49-47cc76ece0a5",
             "key":"level",
@@ -47,7 +47,7 @@ Provides helper tools for Kibana such as URL parsing.
             "store":"appState"
          },
          "meta":{
-            "alias":"!n",
+            "alias":null,
             "disabled":false,
             "index":"c69d0b00-0f28-11e9-9d49-47cc76ece0a5",
             "key":"level",
@@ -73,7 +73,7 @@ Provides helper tools for Kibana such as URL parsing.
             "store":"appState"
          },
          "meta":{
-            "alias":"!n",
+            "alias":null,
             "disabled":false,
             "index":"c69d0b00-0f28-11e9-9d49-47cc76ece0a5",
             "key":"level",
@@ -99,7 +99,7 @@ Provides helper tools for Kibana such as URL parsing.
             "store":"appState"
          },
          "meta":{
-            "alias":"!n",
+            "alias":null,
             "disabled":false,
             "index":"c69d0b00-0f28-11e9-9d49-47cc76ece0a5",
             "key":"fields.Area",
