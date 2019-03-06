@@ -93,32 +93,6 @@ Provides helper tools for Kibana such as URL parsing.
                }
             }
          }
-      },
-      {
-         "$state":{
-            "store":"appState"
-         },
-         "meta":{
-            "alias":null,
-            "disabled":false,
-            "index":"c69d0b00-0f28-11e9-9d49-47cc76ece0a5",
-            "key":"fields.Area",
-            "negate":true,
-            "params":{
-               "query":"frontend",
-               "type":"phrase"
-            },
-            "type":"phrase",
-            "value":"frontend"
-         },
-         "query":{
-            "match":{
-               "fields.Area":{
-                  "query":"frontend",
-                  "type":"phrase"
-               }
-            }
-         }
       }
    ],
    "index":"c69d0b00-0f28-11e9-9d49-47cc76ece0a5",
