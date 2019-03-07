@@ -28,7 +28,7 @@ namespace FluffySpoon.Kibana
             return parameters;
         }
 
-        public string ConvertUrlToElasticsearchQueryString(string url)
+        public string ConvertUrlToElasticsearchQueryString(string url, string timeFilterFieldName)
         {
             var gObject = JsonConvert.DeserializeObject<JObject>(
                 ConvertQueryParameterValueToJson(
@@ -58,7 +58,7 @@ namespace FluffySpoon.Kibana
                     "range",
                     new JObject() {
                         {
-                            "date",
+                            timeFilterFieldName,
                             new JObject() {
                                 { "gte", from },
                                 { "lte", to }

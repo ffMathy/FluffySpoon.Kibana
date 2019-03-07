@@ -62,7 +62,7 @@ namespace FluffySpoon.Kibana.Tests
         public void CanParseUrlToElasticsearchQuery()
         {
             var result = new KibanaParser().ConvertUrlToElasticsearchQueryString(
-                "https://example.com/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-15m,mode:quick,to:now))&_a=(columns:!(_source),index:d9e4bde0-40d1-11e9-a719-3df4f8d2c5eb,interval:auto,query:(language:kuery,query:''),sort:!(createdUtc,desc))");
+                "https://example.com/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-15m,mode:quick,to:now))&_a=(columns:!(_source),index:d9e4bde0-40d1-11e9-a719-3df4f8d2c5eb,interval:auto,query:(language:kuery,query:''),sort:!(createdUtc,desc))", "stuff");
             JsonConvert.DeserializeObject(result);
         }
     }
