@@ -126,35 +126,46 @@ namespace FluffySpoon.Kibana
                 totalStringSoFar = "";
             };
 
+            var isInsideString = false;
             EnumerateRelevantCodeCharacterRegions(content, (stringSoFar, character) =>
             {
-                var characterExitScope = GetMatchingExitScope(stringSoFar);
-                var characterEntryScope = GetMatchingEntryScope(stringSoFar);
+                if (character == "'")
+                    isInsideString = !isInsideString;
 
-                var isCharacterExitScope = characterExitScope != null;
-                var isCharacterEntryScope = characterEntryScope != null;
-
-                var isCharacterBothScopes = isCharacterEntryScope && isCharacterExitScope;
-
-                var shouldTreatAsExitScope = isCharacterBothScopes ?
-                    characterExitScope == lastSeenEntryScope :
-                    isCharacterExitScope;
-                if (shouldTreatAsExitScope && scope > 0)
+                if (!isInsideString)
                 {
-                    scope--;
-                }
-                else if (isCharacterEntryScope)
-                {
-                    scope++;
-                    lastSeenEntryScope = characterEntryScope;
-                }
+                    var characterExitScope = GetMatchingExitScope(stringSoFar);
+                    var characterEntryScope = GetMatchingEntryScope(stringSoFar);
 
-                if (scope == 0 && (character == separator || separator == ""))
-                {
-                    if (separator == "" || includeSeparatorInSplits)
+                    var isCharacterExitScope = characterExitScope != null;
+                    var isCharacterEntryScope = characterEntryScope != null;
+
+                    var isCharacterBothScopes = isCharacterEntryScope && isCharacterExitScope;
+
+                    var shouldTreatAsExitScope = isCharacterBothScopes
+                        ? characterExitScope == lastSeenEntryScope
+                        : isCharacterExitScope;
+                    if (shouldTreatAsExitScope && scope > 0)
+                    {
+                        scope--;
+                    }
+                    else if (isCharacterEntryScope)
+                    {
+                        scope++;
+                        lastSeenEntryScope = characterEntryScope;
+                    }
+
+                    if (scope == 0 && (character == separator || separator == ""))
+                    {
+                        if (separator == "" || includeSeparatorInSplits)
+                            totalStringSoFar += character;
+
+                        PushNewSplit();
+                    }
+                    else
+                    {
                         totalStringSoFar += character;
-
-                    PushNewSplit();
+                    }
                 }
                 else
                 {
@@ -168,40 +179,17 @@ namespace FluffySpoon.Kibana
             return splits.ToArray();
         }
 
-        static string EnumerateRelevantCodeCharacterRegions(string content, Action<string, string> enumerator = null)
+        static void EnumerateRelevantCodeCharacterRegions(string content, Action<string, string> enumerator = null)
         {
             if (content == null)
-                return null;
-
-            var insideString = false;
-            var stringEntry = "";
-            var insideStringEscapeCharacter = false;
+                return;
 
             var stringSoFar = "";
-
             foreach (var character in content)
             {
                 stringSoFar += character;
-
-                if (insideString && character == '\\')
-                {
-                    insideStringEscapeCharacter = true;
-                }
-                else if (insideString)
-                    insideStringEscapeCharacter = false;
-
-                var isEnteringString = (character == '"' || character == '\'') && !insideString;
-                var isExitingString = insideString && character == stringEntry.FirstOrDefault();
-                if (!insideStringEscapeCharacter && (isEnteringString || isExitingString))
-                {
-                    insideString = !insideString;
-                    stringEntry = character + "";
-                }
-
                 enumerator?.Invoke(stringSoFar, character.ToString());
             }
-
-            return stringSoFar;
         }
     }
 

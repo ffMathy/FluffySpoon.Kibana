@@ -44,10 +44,16 @@ namespace FluffySpoon.Kibana.States
 				}
 				else
 				{
-					if (isString)
-						result += "\"";
+                    if (isString)
+                    {
+                        result += "\"";
+                        content = content
+                            .Replace("\"", "\\\"")
+                            .Replace("\n", "\\n")
+                            .Replace("\r", "\\r");
+                    }
 
-					result += content;
+                    result += content;
 
 					if (isString)
 						result += "\"";
