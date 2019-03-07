@@ -11,7 +11,10 @@ namespace FluffySpoon.Kibana.States
 
 			var result = string.Empty;
 
-			var objectScope = ScopeHelper.GetScopes(content, "(", ")").SingleOrDefault();
+            var objectScopes = ScopeHelper
+                .GetScopes(content, "(", ")")
+                .ToArray();
+            var objectScope = objectScopes.SingleOrDefault();
 			if (IsScopeValid(objectScope))
 			{
 				if (objectScope.Prefix == "(")

@@ -105,17 +105,22 @@ namespace FluffySpoon.Kibana
 		{
 			var scopes = new[] {
 
-				("!(", ")"),
-				("(", ")")
-			};
+                ("!(", ")"),
+                ("(", ")"),
+                ("'", "'"),
+            };
 
-			bool isEntryScope(string item) => scopes.Any(x => x.Item1 == item);
-			bool isExitScope(string item) => scopes.Any(x => x.Item2 == item);
+			bool isEntryScope(string item) => scopes.Any(x => item.EndsWith(x.Item1));
+			bool isExitScope(string item) => scopes.Any(x => item.EndsWith(x.Item2));
+            int getScopeLength(string item) => Math.Max(
+                scopes.FirstOrDefault(x => item.EndsWith(x.Item2)).Item1.Length,
+                scopes.FirstOrDefault(x => item.EndsWith(x.Item2)).Item1.Length);
 
-			var scope = 0;
+            var scope = 0;
 			var totalStringSoFar = "";
-			var deepScopeStringSoFar = "";
+            var lastSeenEntryScope = "";
 			var splits = new List<string>();
+            var skipNext = 0;
 
 			void pushNewSplit()
 			{
@@ -127,15 +132,28 @@ namespace FluffySpoon.Kibana
 				totalStringSoFar = "";
 			};
 
-			EnumerateRelevantCodeCharacterRegions(content, (stringSoFar, character) =>
-			{
-				if (isEntryScope(character))
+            EnumerateRelevantCodeCharacterRegions(content, (stringSoFar, character) =>
+            {
+                var isCharacterExitScope = isExitScope(stringSoFar);
+                var isCharacterEntryScope = isEntryScope(stringSoFar);
+
+                var isCharacterBothScopes = isCharacterEntryScope && isCharacterExitScope;
+                var isScope = isCharacterEntryScope || isCharacterExitScope;
+
+                if(isScope)
+                    skipNext = getScopeLength(stringSoFar) - 1;
+
+                var shouldTreatAsExitScope = isCharacterBothScopes ?
+                    character == lastSeenEntryScope :
+                    isCharacterExitScope;
+                if (shouldTreatAsExitScope && scope > 0)
+                {
+                    scope--;
+                }
+                else if (isCharacterEntryScope)
 				{
 					scope++;
-				}
-				else if (isExitScope(character) && scope > 0)
-				{
-					scope--;
+                    lastSeenEntryScope = character;
 				}
 
 				if (scope == 0 && (character == separator || separator == ""))
