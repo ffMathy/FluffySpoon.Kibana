@@ -13,6 +13,7 @@ namespace FluffySpoon.Kibana.States
 
             var objectScopes = ScopeHelper
                 .GetScopes(content, "(", ")")
+                .Where(x => x.Content != string.Empty)
                 .ToArray();
             var objectScope = objectScopes.SingleOrDefault();
 			if (IsScopeValid(objectScope))
