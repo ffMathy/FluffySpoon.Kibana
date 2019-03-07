@@ -105,8 +105,7 @@ namespace FluffySpoon.Kibana
         {
             var scopes = new[] {
                 ("!(", ")"),
-                ("(", ")"),
-                ("'", "'"),
+                ("(", ")")
             };
 
             string GetMatchingEntryScope(string item) => scopes.FirstOrDefault(x => item.EndsWith(x.Item1)).Item1;
@@ -129,8 +128,8 @@ namespace FluffySpoon.Kibana
 
             EnumerateRelevantCodeCharacterRegions(content, (stringSoFar, character) =>
             {
-                var characterExitScope = GetMatchingEntryScope(stringSoFar);
-                var characterEntryScope = GetMatchingExitScope(stringSoFar);
+                var characterExitScope = GetMatchingExitScope(stringSoFar);
+                var characterEntryScope = GetMatchingEntryScope(stringSoFar);
 
                 var isCharacterExitScope = characterExitScope != null;
                 var isCharacterEntryScope = characterEntryScope != null;
@@ -138,7 +137,7 @@ namespace FluffySpoon.Kibana
                 var isCharacterBothScopes = isCharacterEntryScope && isCharacterExitScope;
 
                 var shouldTreatAsExitScope = isCharacterBothScopes ?
-                    character == lastSeenEntryScope :
+                    characterExitScope == lastSeenEntryScope :
                     isCharacterExitScope;
                 if (shouldTreatAsExitScope && scope > 0)
                 {

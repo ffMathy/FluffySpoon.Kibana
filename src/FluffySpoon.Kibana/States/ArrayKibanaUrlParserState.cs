@@ -11,7 +11,7 @@ namespace FluffySpoon.Kibana.States
 
 			var arrayScopes = ScopeHelper
 				.GetScopedList(",", content)
-				.Select(x => x.Trim());
+                .ToArray();
 			var count = 0;
 			foreach (var arrayScope in arrayScopes)
 			{
