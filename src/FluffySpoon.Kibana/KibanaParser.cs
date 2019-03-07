@@ -41,7 +41,7 @@ namespace FluffySpoon.Kibana
             var from = "now-15m";
             var to = "now";
 
-            var time = (JObject) gObject.Property("time")?.Value;
+            var time = (JObject)gObject.Property("time")?.Value;
             if (time != null)
             {
                 from = (string)time.Property("from")?.Value ?? from;
@@ -50,16 +50,14 @@ namespace FluffySpoon.Kibana
 
             var filters = (JArray)aObject.Property("filters")?.Value;
             var filterValues = filters?.Values<JObject>();
-            if (filterValues == null)
-                return null;
 
             var mustArray = new JArray();
             mustArray.Add(new JObject()
             {
-                { 
-                    "range", 
+                {
+                    "range",
                     new JObject() {
-                        { 
+                        {
                             "date",
                             new JObject() {
                                 { "gte", from },
@@ -71,47 +69,49 @@ namespace FluffySpoon.Kibana
             });
 
             var mustNotArray = new JArray();
-            foreach (var filter in filterValues)
+
+            if (filterValues != null)
             {
-                var meta = (JObject)filter.Property("meta").Value;
-                var shouldNegate = (bool)meta.Property("negate").Value;
-
-                var targetArray = shouldNegate ? 
-                    mustNotArray : 
-                    mustArray;
-
-                var queryProperty = (JObject)filter.Property("query")?.Value;
-                if (queryProperty != null)
+                foreach (var filter in filterValues)
                 {
-                    var matchProperty = (JObject)queryProperty.Property("match").Value;
+                    var meta = (JObject)filter.Property("meta").Value;
+                    var shouldNegate = (bool)meta.Property("negate").Value;
 
-                    var matchProperties = matchProperty
-                        .Properties()
-                        .Select(x => x.Value)
-                        .OfType<JObject>();
+                    var targetArray = shouldNegate ? mustNotArray : mustArray;
 
-                    foreach (var property in matchProperties)
+                    var queryProperty = (JObject)filter.Property("query")?.Value;
+                    if (queryProperty != null)
                     {
-                        var type = property.Property("type").Value.ToString();
-                        if (type != "phrase")
-                            throw new InvalidOperationException("Unknown search type: " + type);
+                        var matchProperty = (JObject)queryProperty.Property("match").Value;
 
-                        property.Remove("type");
+                        var matchProperties = matchProperty
+                            .Properties()
+                            .Select(x => x.Value)
+                            .OfType<JObject>();
+
+                        foreach (var property in matchProperties)
+                        {
+                            var type = property.Property("type").Value.ToString();
+                            if (type != "phrase")
+                                throw new InvalidOperationException("Unknown search type: " + type);
+
+                            property.Remove("type");
+                        }
+
+                        queryProperty.Remove("match");
+                        queryProperty.Add("match_phrase", matchProperty);
+
+                        targetArray.Add(queryProperty);
                     }
 
-                    queryProperty.Remove("match");
-                    queryProperty.Add("match_phrase", matchProperty);
-
-                    targetArray.Add(queryProperty);
-                }
-
-                var existsProperty = (JObject)filter.Property("exists")?.Value;
-                if (existsProperty != null)
-                {
-                    targetArray.Add(new JObject()
+                    var existsProperty = (JObject)filter.Property("exists")?.Value;
+                    if (existsProperty != null)
                     {
-                        { "exists", existsProperty }
-                    });
+                        targetArray.Add(new JObject()
+                        {
+                            {"exists", existsProperty}
+                        });
+                    }
                 }
             }
 

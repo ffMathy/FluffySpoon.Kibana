@@ -62,7 +62,7 @@ namespace FluffySpoon.Kibana.Tests
         public void CanParseUrlToElasticsearchQuery()
         {
             var result = new KibanaParser().ConvertUrlToElasticsearchQueryString(
-                "https://example.com/app/kibana#/dashboard/c4bfe170-3f4a-11e9-8d2e-3f08e16da335?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-30m,mode:quick,to:now))&_a=(description:'',filters:!(),fullScreenMode:!f,options:(darkTheme:!f,hidePanelTitles:!f,useMargins:!t),panels:!((embeddableConfig:(mapCenter:!(57.136239319177434,-3.3398437500000004),mapZoom:2),gridData:(h:21,i:'1',w:40,x:0,y:0),id:'0fa4d020-3f4a-11e9-8d2e-3f08e16da335',panelIndex:'1',type:visualization,version:'6.6.1'),(embeddableConfig:(),gridData:(h:12,i:'2',w:10,x:21,y:21),id:'8745c590-3f49-11e9-8d2e-3f08e16da335',panelIndex:'2',type:visualization,version:'6.6.1'),(embeddableConfig:(),gridData:(h:10,i:'3',w:8,x:21,y:33),id:'6d19ca40-3f49-11e9-8d2e-3f08e16da335',panelIndex:'3',type:visualization,version:'6.6.1'),(embeddableConfig:(),gridData:(h:22,i:'4',w:28,x:0,y:43),id:'28311aa0-3f49-11e9-8d2e-3f08e16da335',panelIndex:'4',type:visualization,version:'6.6.1'),(embeddableConfig:(),gridData:(h:22,i:'5',w:21,x:0,y:21),id:eac48160-3f49-11e9-8d2e-3f08e16da335,panelIndex:'5',type:visualization,version:'6.6.1')),query:(language:kuery,query:''),timeRestore:!f,title:Users,viewMode:view)");
+                "https://example.com/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-15m,mode:quick,to:now))&_a=(columns:!(_source),index:d9e4bde0-40d1-11e9-a719-3df4f8d2c5eb,interval:auto,query:(language:kuery,query:''),sort:!(createdUtc,desc))");
             JsonConvert.DeserializeObject(result);
         }
     }
