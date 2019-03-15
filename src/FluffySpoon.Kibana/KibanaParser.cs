@@ -82,28 +82,17 @@ namespace FluffySpoon.Kibana
                     var queryProperty = (JObject)filter.Property("query")?.Value;
                     if (queryProperty != null)
                     {
-                        var matchProperty = (JObject)queryProperty.Property("match")?.Value;
-                        if (matchProperty != null)
-                        {
-                            var matchProperties = matchProperty
-                                .Properties()
-                                .Select(x => x.Value)
-                                .OfType<JObject>();
-
-                            foreach (var property in matchProperties)
-                            {
-                                var type = property.Property("type").Value.ToString();
-                                if (type != "phrase")
-                                    throw new InvalidOperationException("Unknown search type: " + type);
-
-                                property.Remove("type");
-                            }
-
-                            queryProperty.Remove("match");
-                            queryProperty.Add("match_phrase", matchProperty);
-                        }
-
+                        PrepareQueryProperty(queryProperty);
                         targetArray.Add(queryProperty);
+                    }
+
+                    var geoBoundingBoxProperty = (JObject)filter.Property("geo_bounding_box")?.Value;
+                    if (geoBoundingBoxProperty != null)
+                    {
+                        targetArray.Add(new JObject()
+                        {
+                            {"geo_bounding_box", geoBoundingBoxProperty}
+                        });
                     }
 
                     var existsProperty = (JObject)filter.Property("exists")?.Value;
@@ -129,6 +118,30 @@ namespace FluffySpoon.Kibana
             };
 
             return queryContainer.ToString();
+        }
+
+        private static void PrepareQueryProperty(JObject queryProperty)
+        {
+            var matchProperty = (JObject) queryProperty.Property("match")?.Value;
+            if (matchProperty != null)
+            {
+                var matchProperties = matchProperty
+                    .Properties()
+                    .Select(x => x.Value)
+                    .OfType<JObject>();
+
+                foreach (var property in matchProperties)
+                {
+                    var type = property.Property("type").Value.ToString();
+                    if (type != "phrase")
+                        throw new InvalidOperationException("Unknown search type: " + type);
+
+                    property.Remove("type");
+                }
+
+                queryProperty.Remove("match");
+                queryProperty.Add("match_phrase", matchProperty);
+            }
         }
     }
 }
