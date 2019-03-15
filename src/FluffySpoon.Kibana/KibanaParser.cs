@@ -82,24 +82,26 @@ namespace FluffySpoon.Kibana
                     var queryProperty = (JObject)filter.Property("query")?.Value;
                     if (queryProperty != null)
                     {
-                        var matchProperty = (JObject)queryProperty.Property("match").Value;
-
-                        var matchProperties = matchProperty
-                            .Properties()
-                            .Select(x => x.Value)
-                            .OfType<JObject>();
-
-                        foreach (var property in matchProperties)
+                        var matchProperty = (JObject)queryProperty.Property("match")?.Value;
+                        if (matchProperty != null)
                         {
-                            var type = property.Property("type").Value.ToString();
-                            if (type != "phrase")
-                                throw new InvalidOperationException("Unknown search type: " + type);
+                            var matchProperties = matchProperty
+                                .Properties()
+                                .Select(x => x.Value)
+                                .OfType<JObject>();
 
-                            property.Remove("type");
+                            foreach (var property in matchProperties)
+                            {
+                                var type = property.Property("type").Value.ToString();
+                                if (type != "phrase")
+                                    throw new InvalidOperationException("Unknown search type: " + type);
+
+                                property.Remove("type");
+                            }
+
+                            queryProperty.Remove("match");
+                            queryProperty.Add("match_phrase", matchProperty);
                         }
-
-                        queryProperty.Remove("match");
-                        queryProperty.Add("match_phrase", matchProperty);
 
                         targetArray.Add(queryProperty);
                     }
