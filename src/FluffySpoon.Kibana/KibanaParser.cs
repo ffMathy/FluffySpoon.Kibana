@@ -11,7 +11,7 @@ namespace FluffySpoon.Kibana
     {
         public string ConvertQueryParameterValueToJson(string value)
         {
-            if (value == null)
+            if (string.IsNullOrEmpty(value))
                 return null;
 
             value = value.Trim();
@@ -22,7 +22,10 @@ namespace FluffySpoon.Kibana
         private string ExtractQueryParameterValueFromUrl(string url, string key)
         {
             var uri = new Uri(url.Replace("#", ""));
-            var queryString = QueryHelpers.ParseQuery(uri.Query); ;
+            var queryString = QueryHelpers.ParseQuery(uri.Query);
+
+            if (!queryString.ContainsKey(key))
+                return null;
 
             var parameters = queryString[key];
             return parameters;
@@ -30,25 +33,23 @@ namespace FluffySpoon.Kibana
 
         public string ConvertUrlToElasticsearchQueryString(string url, string timeFilterFieldName)
         {
-            var gObject = JsonConvert.DeserializeObject<JObject>(
-                ConvertQueryParameterValueToJson(
-                    ExtractQueryParameterValueFromUrl(url, "_g")));
+            var gJson = ConvertQueryParameterValueToJson(ExtractQueryParameterValueFromUrl(url, "_g"));
+            var gObject = gJson == null ? null : JsonConvert.DeserializeObject<JObject>(gJson);
 
-            var aObject = JsonConvert.DeserializeObject<JObject>(
-                ConvertQueryParameterValueToJson(
-                    ExtractQueryParameterValueFromUrl(url, "_a")));
+            var aJson = ConvertQueryParameterValueToJson(ExtractQueryParameterValueFromUrl(url, "_a"));
+            var aObject = aJson == null ? null : JsonConvert.DeserializeObject<JObject>(aJson);
 
             var from = "now-15m";
             var to = "now";
 
-            var time = (JObject)gObject.Property("time")?.Value;
+            var time = (JObject)gObject?.Property("time")?.Value;
             if (time != null)
             {
                 from = (string)time.Property("from")?.Value ?? from;
                 to = (string)time.Property("to")?.Value ?? to;
             }
 
-            var filters = (JArray)aObject.Property("filters")?.Value;
+            var filters = (JArray)aObject?.Property("filters")?.Value;
             var filterValues = filters?.Values<JObject>();
 
             var mustArray = new JArray();

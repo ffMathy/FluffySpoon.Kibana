@@ -127,9 +127,11 @@ namespace FluffySpoon.Kibana
             };
 
             var isInsideString = false;
+            var insideStringEscapeCharacter = false;
+
             EnumerateRelevantCodeCharacterRegions(content, (stringSoFar, character) =>
             {
-                if (character == "'")
+                if (!insideStringEscapeCharacter && character == "'")
                     isInsideString = !isInsideString;
 
                 if (!isInsideString)
@@ -169,7 +171,14 @@ namespace FluffySpoon.Kibana
                 }
                 else
                 {
-                    totalStringSoFar += character;
+                    if(character == "!")
+                    {
+                        insideStringEscapeCharacter = true;
+                    } else
+                    {
+                        insideStringEscapeCharacter = false;
+                        totalStringSoFar += character;
+                    }
                 }
             });
 

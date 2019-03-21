@@ -16,7 +16,7 @@ namespace FluffySpoon.Kibana.States
                 .Where(x => x.Content != string.Empty)
                 .ToArray();
             var objectScope = objectScopes.SingleOrDefault();
-			if (IsScopeValid(objectScope))
+			if (IsScopeValidNested(objectScope))
 			{
 				if (objectScope.Prefix == "(")
 					result += new ObjectKibanaUrlParserState().Handle(objectScope.Content);
@@ -63,9 +63,9 @@ namespace FluffySpoon.Kibana.States
 			return result;
 		}
 
-		private static bool IsScopeValid(Scope objectScope)
+		private static bool IsScopeValidNested(Scope objectScope)
 		{
-			return objectScope.Suffix != null;
+			return objectScope.Suffix != null && !objectScope.Prefix?.StartsWith('\'') == true;
 		}
 	}
 }
