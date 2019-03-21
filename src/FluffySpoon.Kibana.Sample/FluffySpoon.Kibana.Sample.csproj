@@ -9,4 +9,10 @@
     <ProjectReference Include="..\FluffySpoon.Kibana\FluffySpoon.Kibana.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="KibanaUrl.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

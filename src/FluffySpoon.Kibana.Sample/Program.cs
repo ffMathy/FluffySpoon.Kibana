@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace FluffySpoon.Kibana.Sample
 {
@@ -6,9 +7,7 @@ namespace FluffySpoon.Kibana.Sample
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Enter Kibana URL:");
-
-            var kibanaUrl = Console.ReadLine();
+            var kibanaUrl = File.ReadAllText("KibanaUrl.txt");
 
             var parser = new KibanaParser();
             var elasticsearchQuery = parser.ConvertUrlToElasticsearchQueryString(kibanaUrl, "order_date");
