@@ -87,6 +87,15 @@ namespace FluffySpoon.Kibana
                         targetArray.Add(queryProperty);
                     }
 
+                    var rangeProperty = (JObject)filter.Property("range")?.Value;
+                    if (rangeProperty != null)
+                    {
+                        targetArray.Add(new JObject()
+                        {
+                            {"range", rangeProperty}
+                        });
+                    }
+
                     var geoBoundingBoxProperty = (JObject)filter.Property("geo_bounding_box")?.Value;
                     if (geoBoundingBoxProperty != null)
                     {
