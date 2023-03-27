@@ -34,7 +34,7 @@ namespace FluffySpoon.Kibana.States
                     }
 
                     var isSpecialValue = content.StartsWith('!');
-                    if (!isSpecialValue && content.Any(x => !char.IsNumber(x)))
+                    if (!isSpecialValue && !double.TryParse(content, out _))
                     {
                         isString = true;
                     }

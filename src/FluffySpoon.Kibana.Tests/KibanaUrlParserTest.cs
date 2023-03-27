@@ -20,6 +20,20 @@ namespace FluffySpoon.Kibana.Tests
 			Assert.AreEqual("[]", new KibanaParser().ConvertQueryParameterValueToJson(
 				"!()"));
 		}
+		
+		[TestMethod]
+        	public void CanParseGeoShape()
+        	{
+            		Assert.AreEqual("{\"geo_shape\":{\"ignore_unmapped\":true,\"location\":{\"relation\":\"INTERSECTS\",\"shape\":{\"coordinates\":[[[10.10399,56.19963],[10.10399,56.13661],[10.24758,56.13661],[10.24758,56.19963],[10.10399,56.19963]]],\"type\":\"Polygon\"}}}}", new KibanaParser().ConvertQueryParameterValueToJson(
+               		"(geo_shape:(ignore_unmapped:!t,location:(relation:INTERSECTS,shape:(coordinates:!(!(!(10.10399,56.19963),!(10.10399,56.13661),!(10.24758,56.13661),!(10.24758,56.19963),!(10.10399,56.19963))),type:Polygon))))"));
+        	}
+        
+        	[TestMethod]
+        	public void CanParseGeoDistance()
+        	{
+           		Assert.AreEqual("{\"geo_distance\":{\"distance\":\"3.11km\",\"location\":[10.0294,56.0904]}}", new KibanaParser().ConvertQueryParameterValueToJson(
+                	"(geo_distance:(distance:'3.11km',location:!(10.0294,56.0904)))"));
+        	}
 
 		[TestMethod]
 		public void CanParseObject()
